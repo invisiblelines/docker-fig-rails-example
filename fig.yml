@@ -1,0 +1,24 @@
+db:
+  image: postgres:9.4.0
+  environment:
+    POSTGRES_USER: 'docker'
+    POSTGRES_PASSWORD: 'mysupersecretpassword'
+app:
+  build: .
+  volumes:
+    - .:/var/www/
+  ports:
+    - "5000:5000"
+  links:
+    - db
+  environment:
+    RACK_ENV: development
+test:
+  build: .
+  volumes:
+    - .:/var/www
+  links:
+    - db
+  environment:
+    RACK_ENV: test
+  command: 'bundle exec guard -i -p -l 1'
